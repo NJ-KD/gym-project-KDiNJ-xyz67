@@ -165,76 +165,95 @@ function generatePlan() {
     const resultDiv = document.getElementById('result');
 
     resultDiv.style.display = 'block';
-    resultDiv.innerHTML = "<span class='ai-status'>SKANOWANIE SYSTEMU... OBLICZANIE OBJĘTOŚCI TRENINGOWEJ...</span>";
+    resultDiv.innerHTML = "<span class='ai-status'>ŁADOWANIE PROTOKOŁÓW TRENINGOWYCH... OPTYMALIZACJA JEDNOSTEK...</span>";
 
     setTimeout(() => {
-        let plan = "<strong style='color: var(--danger-red); font-size: 1.2rem;'>RAPORT TRENINGOWY:</strong><br><br>";
+        let plan = "<strong style='color: var(--danger-red); font-size: 1.3rem;'>FINALNY RAPORT CYBERGYM:</strong><br><br>";
 
-        // Ustalanie parametrów na podstawie zmęczenia
+        // Parametry serii w zależności od zmęczenia
         let sets = "4";
-        let reps = "8-10";
-        if (fatigue >= 5) { sets = "3"; reps = "12-15"; } // Lżejszy trening przy zmęczeniu
-        if (fatigue >= 8) { sets = "2"; reps = "15-20"; } // Bardzo lekki przy dużym zmęczeniu
-
+        let reps = "8-12";
+        if (fatigue >= 6) { sets = "3"; reps = "12-15"; }
+        
         if (fatigue >= 9) {
-            plan += "🚨 <strong>KRYTYCZNE ZMĘCZENIE!</strong><br>System odmawia generowania planu siłowego. <br>Zalecenie: 30 min rozciągania i sen. Jutro będziesz silniejszy.";
+            plan += "🚨 <strong>STOP! KRYTYCZNE PRZECIĄŻENIE.</strong><br>AI wykryło ryzyko kontuzji. Trening siłowy zablokowany.<br>Zalecenie: Basen (30 min) + Sauna + Sen 9h.";
         } else {
-            // Analiza bólu i dobór ćwiczeń
             let exercises = [];
             
+            // LOGIKA GENEROWANIA BOGATEGO PLANU
             if (pain.includes("noga") || pain.includes("kolan")) {
-                plan += "⚠️ <strong>ALARM:</strong> Kontuzja dołu ciała. Blokada nóg.<br>";
+                plan += "⚠️ <strong>MODYFIKACJA:</strong> Kontuzja dołu ciała. Priorytet: GÓRA.<br>";
                 exercises = [
-                    `Wyciskanie sztangi leżąc: ${sets} serie x ${reps}`,
-                    `Podciąganie na drążku: ${sets} serie x max`,
-                    `Wyciskanie hantli nad głowę: ${sets} serie x 12`,
-                    `Uginanie ramion (Biceps): 3 serie x 15`
+                    `Wyciskanie sztangi na skosie: ${sets} x 8`,
+                    `Podciąganie szerokim nachwytem: ${sets} x Max`,
+                    `Wyciskanie hantli siedząc (Barki): 3 x 12`,
+                    `Wiosłowanie hantlem w oparciu: 3 x 10`,
+                    `Dipsy na poręczach: 3 x 12`,
+                    `Uginanie ramion ze sztangą (Biceps): 3 x 15`,
+                    `Plank: 3 x 60 sekund`
                 ];
             } else if (pain.includes("plecy") || pain.includes("kręgosłup")) {
-                plan += "⚠️ <strong>ALARM:</strong> Stabilizacja kręgosłupa priorytetem.<br>";
+                plan += "⚠️ <strong>MODYFIKACJA:</strong> Oszczędzanie kręgosłupa (Brak osiowego obciążenia).<br>";
                 exercises = [
-                    `Wyprosty nóg na maszynie: ${sets} serie x 15`,
-                    `Uginanie nóg leżąc: ${sets} serie x 15`,
-                    `Wyciskanie na maszynie (Klatka): ${sets} serie x 12`,
-                    `Plank (Deska): 3 serie x 45 sek`
+                    `Wyciskanie na maszynie siedząc: ${sets} x 12`,
+                    `Wyprosty nóg na maszynie: 4 x 15`,
+                    `Uginanie nóg leżąc: 4 x 15`,
+                    `Ściąganie drążka wyciągu górnego: 4 x 12`,
+                    `Wznosy bokiem hantli: 4 x 15`,
+                    `Maszyna na brzuch: 4 x 20`
                 ];
             } else {
-                plan += "🔥 <strong>STATUS:</strong> Pełna gotowość bojowa.<br>";
-                if (wish.includes("klat") || wish.includes("push")) {
+                // BRAK BÓLU - PEŁNY WYBÓR
+                if (wish.includes("klatka") || wish.includes("klat")) {
                     exercises = [
-                        `Wyciskanie na ławce: ${sets} serie x ${reps}`,
-                        `Rozpiętki: 3 serie x 12`,
-                        `Dipsy (Pompki na poręczach): ${sets} serie x 10`,
-                        `Triceps (Linki): 3 serie x 15`
+                        `Wyciskanie poziome sztangi: ${sets} x 6-8`,
+                        `Wyciskanie hantli skos dodatni: ${sets} x 10`,
+                        `Rozpiętki na maszynie Butterfly: 3 x 15`,
+                        `Pompki na poręczach (dół klatki): 3 x Max`,
+                        `Skullcrushers (Triceps): 3 x 12`,
+                        `Prostowanie linek na wyciągu: 3 x 15`,
+                        `Bieżnia pod górę: 10 min`
                     ];
                 } else if (wish.includes("plecy") || wish.includes("pull")) {
                     exercises = [
-                        `Martwy ciąg: ${sets} serie x 5`,
-                        `Wiosłowanie sztangą: ${sets} serie x 10`,
-                        `Podciąganie: 3 serie x max`,
-                        `Facepulls: 3 serie x 20`
+                        `Martwy ciąg klasyczny: 4 x 5`,
+                        `Podciąganie nachwytem: 4 x Max`,
+                        `Wiosłowanie sztangą w opadzie: ${sets} x 8`,
+                        `Przyciąganie rączki wyciągu dolnego: 3 x 12`,
+                        `Facepulls (tył barku): 4 x 20`,
+                        `Uginanie ramion z hantlami: 4 x 12`,
+                        `Zwisy na drążku: 3 x 30 sek`
+                    ];
+                } else if (wish.includes("łapy") || wish.includes("biceps") || wish.includes("tric")) {
+                    exercises = [
+                        `Wyciskanie wąsko (Triceps): 4 x 8`,
+                        `Uginanie ramion ze sztangą: 4 x 10`,
+                        `Francuskie wyciskanie hantla: 3 x 12`,
+                        `Uginanie młotkowe: 3 x 12`,
+                        `Pompki diamentowe: 3 x Max`,
+                        `Modlitewnik: 3 x 15`
                     ];
                 } else {
-                    // Domyślny FBW jeśli nic nie wpisano lub coś innego
+                    // DOMYŚLNY HARDKOROWY FBW
                     exercises = [
-                        `Przysiad ze sztangą: ${sets} serie x 8`,
-                        `Wyciskanie hantli: ${sets} serie x 10`,
-                        `Wiosłowanie hantlem: ${sets} serie x 12`,
-                        `Wznosy bokiem: 3 serie x 15`
+                        `Przysiad ze sztangą: 4 x 8`,
+                        `Wyciskanie żołnierskie (Barki): 4 x 10`,
+                        `Martwy ciąg na prostych nogach: 3 x 12`,
+                        `Wyciskanie hantli na ławce: 4 x 10`,
+                        `Wiosłowanie hantlem: 3 x 12`,
+                        `Uginanie ramion + Triceps (Superseria): 3 x 15`,
+                        `Wznosy nóg w zwisie: 3 x 20`
                     ];
                 }
             }
 
-            plan += "<br><strong>LISTA ĆWICZEŃ:</strong><br>";
+            plan += "<ul style='list-style-type: square; padding-left: 20px;'>";
             exercises.forEach(ex => {
-                plan += `• ${ex}<br>`;
+                plan += `<li style='margin-bottom: 8px;'>${ex}</li>`;
             });
+            plan += "</ul>";
 
-            if (wish === "") {
-                plan += "<br>🤖 <em>AI wybrało trening ogólnorozwojowy (FBW).</em>";
-            } else {
-                plan += `<br>🎯 <em>Cel: ${wish.toUpperCase()} uwzględniony w rozpisce.</em>`;
-            }
+            plan += `<br><span style='color: var(--warning-yellow);'>ODPOCZYNEK MIĘDZY SERIAMI: 90 SEKUND.</span>`;
         }
 
         resultDiv.innerHTML = plan;
