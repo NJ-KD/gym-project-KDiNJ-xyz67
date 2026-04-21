@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberGym AI | Hardcore Training</title>
+    <style>
+        :root {
+            --danger-red: #ff0000;
+            --warning-yellow: #ffcc00;
+            --dark-black: #050505;
+            --card-bg: #111111;
+            --text-white: #eeeeee;
+        }
+
+        body {
+            font-family: 'Black Ops One', cursive, 'Arial Black', sans-serif;
+            background-color: var(--dark-black);
+            color: var(--text-white);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+        }
+
+        header {
+            padding: 50px 20px;
+            text-align: center;
+            border-bottom: 3px solid var(--danger-red);
+            width: 100%;
+            box-sizing: border-box;
+            background: linear-gradient(to bottom, #1a0000, var(--dark-black));
+        }
+
+        h1 {
+            color: var(--danger-red);
+            text-transform: uppercase;
+            font-size: 3rem;
+            margin: 0;
+            text-shadow: 2px 2px 0px var(--warning-yellow);
+        }
+
+        .container {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 5px;
+            border: 2px solid var(--danger-red);
+            width: 90%;
+            max-width: 500px;
+            margin-top: 30px;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--warning-yellow);
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--danger-red);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            background: #222;
+            border: 1px solid var(--danger-red);
+            color: white;
+            border-radius: 3px;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--warning-yellow);
+            box-shadow: 0 0 10px var(--warning-yellow);
+        }
+
+        button {
+            width: 100%;
+            padding: 18px;
+            background-color: var(--danger-red);
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 2px solid transparent;
+        }
+
+        button:hover {
+            background-color: black;
+            color: var(--danger-red);
+            border: 2px solid var(--danger-red);
+            box-shadow: 0 0 20px var(--danger-red);
+        }
+
+        #result {
+            margin-top: 30px;
+            padding: 20px;
+            border: 2px dashed var(--warning-yellow);
+            background: rgba(255, 204, 0, 0.05);
+            display: none;
+            line-height: 1.6;
+        }
+
+        .ai-status {
+            color: var(--warning-yellow);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>CyberGym AI</h1>
+    <p style="color: var(--warning-yellow);">PROTOKÓŁ TRENINGOWY v2.0 // NIE MA WYMÓWEK</p>
+</header>
+
+<div class="container">
+    <div class="form-group">
+        <label>Poziom wycieńczenia (1-10)</label>
+        <input type="range" id="fatigue" min="1" max="10" value="3">
+        <div style="display: flex; justify-content: space-between; font-size: 11px; color: #888;">
+            <span>GOTOWY NA WOJNĘ</span>
+            <span>WRAK CZŁOWIEKA</span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Co Cię dzisiaj boli?</label>
+        <input type="text" id="pain" placeholder="np. kolano, dolny grzbiet...">
+    </div>
+
+    <div class="form-group">
+        <label>Twój cel na dziś? (Zostaw puste dla decyzji AI)</label>
+        <input type="text" id="wish" placeholder="np. klatka, plecy, biceps...">
+    </div>
+
+    <button onclick="generatePlan()">URUCHOM GENERATOR PLANU</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+function generatePlan() {
+    const fatigue = document.getElementById('fatigue').value;
+    const pain = document.getElementById('pain').value.toLowerCase();
+    const wish = document.getElementById('wish').value.toLowerCase();
+    const resultDiv = document.getElementById('result');
+
+    resultDiv.style.display = 'block';
+    resultDiv.innerHTML = "<span class='ai-status'>ŁĄCZENIE Z SYSTEMEM... ANALIZA BIOMARKERÓW...</span>";
+
+    setTimeout(() => {
+        let plan = "<strong style='color: var(--danger-red); font-size: 1.2rem;'>RAPORT TRENINGOWY:</strong><br><br>";
+
+        // System ignorowania preferencji przy dużym zmęczeniu
+        if (fatigue >= 9) {
+            plan += "🚨 <strong>KRYTYCZNE ZMĘCZENIE!</strong> Trening siłowy odrzucony. <br>Zalecenie: Aktywna regeneracja, basen lub 20 min rozciągania. Wracaj do domu odpoczywać.";
+        } else {
+            // Analiza bólu
+            if (pain.includes("noga") || pain.includes("kolan")) {
+                plan += "⚠️ <strong>ALARM:</strong> Wykryto problem z nogami. System blokuje przysiady. <br>Skupiamy się na: Podciąganie, Wyciskanie żołnierskie, Brzuch.<br>";
+            } else if (pain.includes("plecy") || pain.includes("bark") || pain.includes("reka")) {
+                plan += "⚠️ <strong>ALARM:</strong> Wykryto problem z górą ciała. <br>Skupiamy się na: Maszyny do nóg, Wyprosty, Wspięcia na palce.<br>";
+            } else {
+                plan += "🔥 <strong>STATUS:</strong> Pełna sprawność mechaniczna. Brak ograniczeń.<br>";
+            }
+
+            // Decyzja o celu
+            if (wish === "") {
+                plan += "<br>🤖 <strong>DECYZJA AI:</strong> Nie podałeś celu. System wybiera: <strong>TRENING SIŁOWY FBW (Baza)</strong>.<br>Ćwiczenia: Martwy ciąg, Wykroki, Wyciskanie hantli.";
+            } else {
+                plan += `<br>🎯 <strong>CEL UŻYTKOWNIKA:</strong> ${wish.toUpperCase()}.<br>Modyfikacja AI: Dodajemy 2 serie o wysokiej intensywności (dropsety).`;
+            }
+
+            // Dodatek od zmęczenia
+            if (fatigue >= 6 && fatigue < 9) {
+                plan += "<br><br>ℹ️ <em>Średnie zmęczenie: Zmniejszono objętość o 20% dla ochrony stawów.</em>";
+            }
+        }
+
+        resultDiv.innerHTML = plan;
+    }, 1200);
+}
+</script>
+
+</body>
+</html>
