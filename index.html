@@ -165,34 +165,75 @@ function generatePlan() {
     const resultDiv = document.getElementById('result');
 
     resultDiv.style.display = 'block';
-    resultDiv.innerHTML = "<span class='ai-status'>ŁĄCZENIE Z SYSTEMEM... ANALIZA BIOMARKERÓW...</span>";
+    resultDiv.innerHTML = "<span class='ai-status'>SKANOWANIE SYSTEMU... OBLICZANIE OBJĘTOŚCI TRENINGOWEJ...</span>";
 
     setTimeout(() => {
         let plan = "<strong style='color: var(--danger-red); font-size: 1.2rem;'>RAPORT TRENINGOWY:</strong><br><br>";
 
-        // System ignorowania preferencji przy dużym zmęczeniu
+        // Ustalanie parametrów na podstawie zmęczenia
+        let sets = "4";
+        let reps = "8-10";
+        if (fatigue >= 5) { sets = "3"; reps = "12-15"; } // Lżejszy trening przy zmęczeniu
+        if (fatigue >= 8) { sets = "2"; reps = "15-20"; } // Bardzo lekki przy dużym zmęczeniu
+
         if (fatigue >= 9) {
-            plan += "🚨 <strong>KRYTYCZNE ZMĘCZENIE!</strong> Trening siłowy odrzucony. <br>Zalecenie: Aktywna regeneracja, basen lub 20 min rozciągania. Wracaj do domu odpoczywać.";
+            plan += "🚨 <strong>KRYTYCZNE ZMĘCZENIE!</strong><br>System odmawia generowania planu siłowego. <br>Zalecenie: 30 min rozciągania i sen. Jutro będziesz silniejszy.";
         } else {
-            // Analiza bólu
+            // Analiza bólu i dobór ćwiczeń
+            let exercises = [];
+            
             if (pain.includes("noga") || pain.includes("kolan")) {
-                plan += "⚠️ <strong>ALARM:</strong> Wykryto problem z nogami. System blokuje przysiady. <br>Skupiamy się na: Podciąganie, Wyciskanie żołnierskie, Brzuch.<br>";
-            } else if (pain.includes("plecy") || pain.includes("bark") || pain.includes("reka")) {
-                plan += "⚠️ <strong>ALARM:</strong> Wykryto problem z górą ciała. <br>Skupiamy się na: Maszyny do nóg, Wyprosty, Wspięcia na palce.<br>";
+                plan += "⚠️ <strong>ALARM:</strong> Kontuzja dołu ciała. Blokada nóg.<br>";
+                exercises = [
+                    `Wyciskanie sztangi leżąc: ${sets} serie x ${reps}`,
+                    `Podciąganie na drążku: ${sets} serie x max`,
+                    `Wyciskanie hantli nad głowę: ${sets} serie x 12`,
+                    `Uginanie ramion (Biceps): 3 serie x 15`
+                ];
+            } else if (pain.includes("plecy") || pain.includes("kręgosłup")) {
+                plan += "⚠️ <strong>ALARM:</strong> Stabilizacja kręgosłupa priorytetem.<br>";
+                exercises = [
+                    `Wyprosty nóg na maszynie: ${sets} serie x 15`,
+                    `Uginanie nóg leżąc: ${sets} serie x 15`,
+                    `Wyciskanie na maszynie (Klatka): ${sets} serie x 12`,
+                    `Plank (Deska): 3 serie x 45 sek`
+                ];
             } else {
-                plan += "🔥 <strong>STATUS:</strong> Pełna sprawność mechaniczna. Brak ograniczeń.<br>";
+                plan += "🔥 <strong>STATUS:</strong> Pełna gotowość bojowa.<br>";
+                if (wish.includes("klat") || wish.includes("push")) {
+                    exercises = [
+                        `Wyciskanie na ławce: ${sets} serie x ${reps}`,
+                        `Rozpiętki: 3 serie x 12`,
+                        `Dipsy (Pompki na poręczach): ${sets} serie x 10`,
+                        `Triceps (Linki): 3 serie x 15`
+                    ];
+                } else if (wish.includes("plecy") || wish.includes("pull")) {
+                    exercises = [
+                        `Martwy ciąg: ${sets} serie x 5`,
+                        `Wiosłowanie sztangą: ${sets} serie x 10`,
+                        `Podciąganie: 3 serie x max`,
+                        `Facepulls: 3 serie x 20`
+                    ];
+                } else {
+                    // Domyślny FBW jeśli nic nie wpisano lub coś innego
+                    exercises = [
+                        `Przysiad ze sztangą: ${sets} serie x 8`,
+                        `Wyciskanie hantli: ${sets} serie x 10`,
+                        `Wiosłowanie hantlem: ${sets} serie x 12`,
+                        `Wznosy bokiem: 3 serie x 15`
+                    ];
+                }
             }
 
-            // Decyzja o celu
+            plan += "<br><strong>LISTA ĆWICZEŃ:</strong><br>";
+            exercises.forEach(ex => {
+                plan += `• ${ex}<br>`;
+            });
+
             if (wish === "") {
-                plan += "<br>🤖 <strong>DECYZJA AI:</strong> Nie podałeś celu. System wybiera: <strong>TRENING SIŁOWY FBW (Baza)</strong>.<br>Ćwiczenia: Martwy ciąg, Wykroki, Wyciskanie hantli.";
+                plan += "<br>🤖 <em>AI wybrało trening ogólnorozwojowy (FBW).</em>";
             } else {
-                plan += `<br>🎯 <strong>CEL UŻYTKOWNIKA:</strong> ${wish.toUpperCase()}.<br>Modyfikacja AI: Dodajemy 2 serie o wysokiej intensywności (dropsety).`;
-            }
-
-            // Dodatek od zmęczenia
-            if (fatigue >= 6 && fatigue < 9) {
-                plan += "<br><br>ℹ️ <em>Średnie zmęczenie: Zmniejszono objętość o 20% dla ochrony stawów.</em>";
+                plan += `<br>🎯 <em>Cel: ${wish.toUpperCase()} uwzględniony w rozpisce.</em>`;
             }
         }
 
@@ -200,6 +241,3 @@ function generatePlan() {
     }, 1200);
 }
 </script>
-
-</body>
-</html>
