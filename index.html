@@ -11,7 +11,7 @@
         #regModal { position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: flex; justify-content: center; align-items: center; }
         .modal-content { background: #1a1a1a; padding: 40px; border: 2px solid var(--danger-red); text-align: center; max-width: 500px; border-radius: 10px; }
         
-        .main-content { display: none; padding: 20px; width: 100%; max-width: 500px; text-align: center; }
+        .main-content { display: none; padding: 20px; width: 100%; max-width: 800px; text-align: center; } /* Zwiększono max-width */
         h1 { color: var(--danger-red); text-transform: uppercase; letter-spacing: 2px; }
         label { display: block; margin: 15px 0 5px; color: var(--warning-yellow); font-weight: bold; text-align: left; }
         
@@ -21,9 +21,9 @@
         input[type="text"], input[type="range"] { width: 100%; padding: 12px; margin-bottom: 10px; box-sizing: border-box; background: #222; border: 1px solid var(--danger-red); color: white; }
         
         #trainerUI { display: none; margin-top: 20px; text-align: left; }
-        #result { margin-top: 20px; padding: 15px; border: 1px dashed var(--warning-yellow); background: #111; line-height: 1.6; }
-        .exercise-item { margin-bottom: 30px; border-bottom: 1px solid #333; padding-bottom: 20px; }
-        .author-tag { font-size: 0.75rem; color: #aaa; font-style: italic; margin-top: 5px; }
+        #result { margin-top: 20px; padding: 20px; border: 1px dashed var(--warning-yellow); background: #111; line-height: 1.6; }
+        .exercise-item { margin-bottom: 40px; border-bottom: 1px solid #444; padding-bottom: 20px; }
+        .author-tag { font-size: 0.8rem; color: #aaa; margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -31,7 +31,6 @@
 <div id="regModal">
     <div class="modal-content">
         <h2>REGULAMIN CYBERGYM AI</h2>
-        <p>1. Trening na własną odpowiedzialność.<br>2. Technika ponad ciężar!<br>3. Brak wymówek.</p>
         <button onclick="acceptRules()">AKCEPTUJĘ</button>
     </div>
 </div>
@@ -40,68 +39,56 @@
     <h1>CyberGym AI</h1>
     <div class="gender-select">
         <label style="text-align: center;">WYBIERZ PŁEĆ:</label>
-        <button onclick="selectGender()">MĘŻCZYŹNA</button>
-        <button onclick="selectGender()">KOBIETA</button>
+        <button onclick="setGender('Mężczyzna')">MĘŻCZYŹNA</button>
+        <button onclick="setGender('Kobieta')">KOBIETA</button>
     </div>
     
     <div id="trainerUI">
         <label>POZIOM WYCIEŃCZENIA (1-10)</label>
         <input type="range" id="fatigue" min="1" max="10" value="3">
-        <label>CO CIĘ DZISIAJ BOLI?</label>
-        <input type="text" id="pain" placeholder="np. kolano, plecy...">
-        <button id="btnGenerate" onclick="generatePlan()" style="width: 100%;">GENERUJ KOMPLETNY PLAN</button>
+        <button onclick="generatePlan()" style="width: 100%;">GENERUJ PLAN</button>
         <div id="result"></div>
     </div>
 </div>
 
 <script>
-    // Twoja baza danych z linkami przekonwertowanymi na format embed
+    let selectedGender = "Mężczyzna";
     const db = {
         "Przysiad ze sztangą": { v: "https://www.youtube.com/embed/DzM8glUTxDc", a: "SzostakTV" },
         "Wyciskanie sztangi płasko": { v: "https://www.youtube.com/embed/Yez7TTi7VWM", a: "KFD" },
         "Martwy ciąg klasyczny": { v: "https://www.youtube.com/embed/_qyZ1QaYy2w", a: "Total Fitness" },
-        "Wyciskanie żołnierskie": { v: "https://www.youtube.com/embed/4YQ1WG0uL_g", a: "Olimp Sport Nutrition" },
         "Wiosłowanie sztangą": { v: "https://www.youtube.com/embed/4R0zm6kZ0Kc", a: "FitRepublic" },
         "Podciąganie na drążku": { v: "https://www.youtube.com/embed/LkLAIT--o0g", a: "tomczeskiworkout8098" },
-        "Wznosy bokiem": { v: "https://www.youtube.com/embed/sL4r8up1Gp0", a: "Patryk Rychter" },
-        "Uginanie ramion z hantlami": { v: "https://www.youtube.com/embed/fSndo5b0NB4", a: "Marcin Jaksender" },
         "Plank (Deska)": { v: "https://www.youtube.com/embed/pSHjTRCQxIw", a: "ScottHermanFitness" }
     };
 
-    function acceptRules() { 
-        document.getElementById('regModal').style.display = 'none'; 
-        document.getElementById('mainContent').style.display = 'flex'; 
-    }
-    
-    function selectGender() { 
-        document.getElementById('trainerUI').style.display = 'block'; 
-    }
+    function acceptRules() { document.getElementById('regModal').style.display = 'none'; document.getElementById('mainContent').style.display = 'flex'; }
+    function setGender(gender) { selectedGender = gender; document.getElementById('trainerUI').style.display = 'block'; alert("Profil: " + gender); }
 
     function generatePlan() {
         const fatigue = document.getElementById('fatigue').value;
         const resultDiv = document.getElementById('result');
-        let sets = (fatigue >= 6) ? "3" : "4";
-        let reps = (fatigue >= 6) ? "12-15" : "8-10";
+        
+        // Logika różnicująca: kobiety więcej powtórzeń (modelowanie), mężczyźni mniej (siła)
+        let reps = (selectedGender === "Kobieta") ? "15-20" : "6-8";
+        let sets = "3";
         
         const plan = [
             {name: "Przysiad ze sztangą", s: sets, r: reps},
             {name: "Wyciskanie sztangi płasko", s: sets, r: reps},
-            {name: "Martwy ciąg klasyczny", s: "3", r: "5-8"},
+            {name: "Martwy ciąg klasyczny", s: sets, r: (selectedGender === "Kobieta" ? "12" : "5")},
             {name: "Wiosłowanie sztangą", s: sets, r: reps},
-            {name: "Wyciskanie żołnierskie", s: "3", r: "10"},
             {name: "Podciąganie na drążku", s: "3", r: "Max"},
-            {name: "Wznosy bokiem", s: "3", r: "15"},
-            {name: "Uginanie ramion z hantlami", s: "3", r: "12"},
             {name: "Plank (Deska)", s: "3", r: "60s"}
         ];
 
-        let html = "<strong>PEŁNY PLAN TRENINGOWY:</strong><br><br>";
+        let html = `<strong>PLAN DLA PROFILU: ${selectedGender.toUpperCase()}</strong><br><br>`;
         plan.forEach(ex => {
             const data = db[ex.name];
             html += `<div class='exercise-item'>
                         <strong>${ex.name}</strong><br>
                         Serie: ${ex.s} | Powtórzenia: ${ex.r}<br>
-                        <iframe width="100%" height="200" src="${data.v}" frameborder="0" allowfullscreen></iframe>
+                        <iframe width="100%" height="400" src="${data.v}" frameborder="0" allowfullscreen></iframe>
                         <div class='author-tag'>Autor wideo: ${data.a}</div>
                      </div>`;
         });
