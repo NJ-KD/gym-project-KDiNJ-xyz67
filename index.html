@@ -3,260 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CyberGym AI | Hardcore Training</title>
+    <title>CyberGym AI | System Treningowy</title>
     <style>
-        :root {
-            --danger-red: #ff0000;
-            --warning-yellow: #ffcc00;
-            --dark-black: #050505;
-            --card-bg: #111111;
-            --text-white: #eeeeee;
-        }
+        :root { --danger-red: #ff0000; --warning-yellow: #ffcc00; --dark-black: #050505; --text-white: #ffffff; }
+        body { font-family: 'Segoe UI', Roboto, sans-serif; background-color: var(--dark-black); color: var(--text-white); margin: 0; display: flex; justify-content: center; min-height: 100vh; }
+        
+        #regModal { position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: flex; justify-content: center; align-items: center; }
+        .modal-content { background: #1a1a1a; padding: 40px; border: 2px solid var(--danger-red); text-align: center; max-width: 500px; border-radius: 10px; }
+        
+        .main-content { display: none; padding: 20px; width: 100%; max-width: 500px; text-align: center; }
+        h1 { color: var(--danger-red); text-transform: uppercase; letter-spacing: 2px; }
+        label { display: block; margin: 15px 0 5px; color: var(--warning-yellow); font-weight: bold; text-align: left; }
+        
+        button { padding: 15px 25px; background: var(--danger-red); border: none; color: white; font-weight: bold; cursor: pointer; text-transform: uppercase; margin: 10px; transition: 0.3s; }
+        button:hover { background: var(--warning-yellow); color: black; }
 
-        body {
-            font-family: 'Black Ops One', cursive, 'Arial Black', sans-serif;
-            background-color: var(--dark-black);
-            color: var(--text-white);
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
-        }
-
-        header {
-            padding: 50px 20px;
-            text-align: center;
-            border-bottom: 3px solid var(--danger-red);
-            width: 100%;
-            box-sizing: border-box;
-            background: linear-gradient(to bottom, #1a0000, var(--dark-black));
-        }
-
-        h1 {
-            color: var(--danger-red);
-            text-transform: uppercase;
-            font-size: 3rem;
-            margin: 0;
-            text-shadow: 2px 2px 0px var(--warning-yellow);
-        }
-
-        .container {
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: 5px;
-            border: 2px solid var(--danger-red);
-            width: 90%;
-            max-width: 500px;
-            margin-top: 30px;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 10px;
-            color: var(--warning-yellow);
-            text-transform: uppercase;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-
-        input[type="range"] {
-            width: 100%;
-            accent-color: var(--danger-red);
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            background: #222;
-            border: 1px solid var(--danger-red);
-            color: white;
-            border-radius: 3px;
-            box-sizing: border-box;
-        }
-
-        input[type="text"]:focus {
-            outline: none;
-            border-color: var(--warning-yellow);
-            box-shadow: 0 0 10px var(--warning-yellow);
-        }
-
-        button {
-            width: 100%;
-            padding: 18px;
-            background-color: var(--danger-red);
-            border: none;
-            color: white;
-            font-size: 1.2rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: 0.2s;
-            border: 2px solid transparent;
-        }
-
-        button:hover {
-            background-color: black;
-            color: var(--danger-red);
-            border: 2px solid var(--danger-red);
-            box-shadow: 0 0 20px var(--danger-red);
-        }
-
-        #result {
-            margin-top: 30px;
-            padding: 20px;
-            border: 2px dashed var(--warning-yellow);
-            background: rgba(255, 204, 0, 0.05);
-            display: none;
-            line-height: 1.6;
-        }
-
-        .ai-status {
-            color: var(--warning-yellow);
-            font-size: 0.9rem;
-            margin-bottom: 10px;
-            display: block;
-        }
+        input[type="text"], input[type="range"] { width: 100%; padding: 12px; margin-bottom: 10px; box-sizing: border-box; background: #222; border: 1px solid var(--danger-red); color: white; }
+        
+        #trainerUI { display: none; margin-top: 20px; text-align: left; }
+        #result { margin-top: 20px; padding: 15px; border: 1px dashed var(--warning-yellow); background: #111; line-height: 1.6; }
     </style>
 </head>
 <body>
 
-<header>
+<div id="regModal">
+    <div class="modal-content">
+        <h2>REGULAMIN CYBERGYM AI</h2>
+        <p>1. Trenujesz na własną odpowiedzialność.<br>2. System AI nie odpowiada za Twoje rekordy.<br>3. Brak wymówek – akceptujesz zasady?</p>
+        <button onclick="acceptRules()">AKCEPTUJĘ</button>
+    </div>
+</div>
+
+<div id="mainContent" class="main-content">
     <h1>CyberGym AI</h1>
-    <p style="color: var(--warning-yellow);">PROTOKÓŁ TRENINGOWY v2.0 // NIE MA WYMÓWEK</p>
-</header>
-
-<div class="container">
-    <div class="form-group">
-        <label>Poziom wycieńczenia (1-10)</label>
+    
+    <div class="gender-select">
+        <label style="text-align: center;">WYBIERZ PŁEĆ:</label>
+        <button onclick="selectGender('Mężczyzna')">MĘŻCZYŹNA</button>
+        <button onclick="selectGender('Kobieta')">KOBIETA</button>
+    </div>
+    
+    <div id="trainerUI">
+        <label>POZIOM WYCIEŃCZENIA (1-10)</label>
         <input type="range" id="fatigue" min="1" max="10" value="3">
-        <div style="display: flex; justify-content: space-between; font-size: 11px; color: #888;">
-            <span>GOTOWY NA WOJNĘ</span>
-            <span>WRAK CZŁOWIEKA</span>
-        </div>
+        
+        <label>CO CIĘ DZISIAJ BOLI?</label>
+        <input type="text" id="pain" placeholder="np. kolano, plecy...">
+        
+        <label>CEL TRENINGOWY (OPCJONALNIE)</label>
+        <input type="text" id="wish" placeholder="np. klata, nogi, cardio...">
+        
+        <button onclick="generatePlan()" style="width: 100%;">GENERUJ PLAN</button>
+        <div id="result"></div>
     </div>
-
-    <div class="form-group">
-        <label>Co Cię dzisiaj boli?</label>
-        <input type="text" id="pain" placeholder="np. kolano, dolny grzbiet...">
-    </div>
-
-    <div class="form-group">
-        <label>Twój cel na dziś? (Zostaw puste dla decyzji AI)</label>
-        <input type="text" id="wish" placeholder="np. klatka, plecy, biceps...">
-    </div>
-
-    <button onclick="generatePlan()">URUCHOM GENERATOR PLANU</button>
-
-    <div id="result"></div>
 </div>
 
 <script>
-function generatePlan() {
-    const fatigue = document.getElementById('fatigue').value;
-    const pain = document.getElementById('pain').value.toLowerCase();
-    const wish = document.getElementById('wish').value.toLowerCase();
-    const resultDiv = document.getElementById('result');
+    function acceptRules() {
+        document.getElementById('regModal').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'flex';
+    }
+    
+    function selectGender(gender) {
+        document.getElementById('trainerUI').style.display = 'block';
+        alert("System ustawiony na profil: " + gender);
+    }
 
-    resultDiv.style.display = 'block';
-    resultDiv.innerHTML = "<span class='ai-status'>ŁADOWANIE PROTOKOŁÓW TRENINGOWYCH... OPTYMALIZACJA JEDNOSTEK...</span>";
+    function generatePlan() {
+        const fatigue = document.getElementById('fatigue').value;
+        const pain = document.getElementById('pain').value.toLowerCase();
+        const wish = document.getElementById('wish').value.toLowerCase();
+        const resultDiv = document.getElementById('result');
 
-    setTimeout(() => {
-        let plan = "<strong style='color: var(--danger-red); font-size: 1.3rem;'>FINALNY RAPORT CYBERGYM:</strong><br><br>";
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = "Analizowanie parametrów...";
 
-        // Parametry serii w zależności od zmęczenia
-        let sets = "4";
-        let reps = "8-12";
-        if (fatigue >= 6) { sets = "3"; reps = "12-15"; }
-        
-        if (fatigue >= 9) {
-            plan += "🚨 <strong>STOP! KRYTYCZNE PRZECIĄŻENIE.</strong><br>AI wykryło ryzyko kontuzji. Trening siłowy zablokowany.<br>Zalecenie: Basen (30 min) + Sauna + Sen 9h.";
-        } else {
+        setTimeout(() => {
+            let sets = (fatigue >= 6) ? "3" : "4";
             let exercises = [];
-            
-            // LOGIKA GENEROWANIA BOGATEGO PLANU
-            if (pain.includes("noga") || pain.includes("kolan")) {
-                plan += "⚠️ <strong>MODYFIKACJA:</strong> Kontuzja dołu ciała. Priorytet: GÓRA.<br>";
-                exercises = [
-                    `Wyciskanie sztangi na skosie: ${sets} x 8`,
-                    `Podciąganie szerokim nachwytem: ${sets} x Max`,
-                    `Wyciskanie hantli siedząc (Barki): 3 x 12`,
-                    `Wiosłowanie hantlem w oparciu: 3 x 10`,
-                    `Dipsy na poręczach: 3 x 12`,
-                    `Uginanie ramion ze sztangą (Biceps): 3 x 15`,
-                    `Plank: 3 x 60 sekund`
-                ];
-            } else if (pain.includes("plecy") || pain.includes("kręgosłup")) {
-                plan += "⚠️ <strong>MODYFIKACJA:</strong> Oszczędzanie kręgosłupa (Brak osiowego obciążenia).<br>";
-                exercises = [
-                    `Wyciskanie na maszynie siedząc: ${sets} x 12`,
-                    `Wyprosty nóg na maszynie: 4 x 15`,
-                    `Uginanie nóg leżąc: 4 x 15`,
-                    `Ściąganie drążka wyciągu górnego: 4 x 12`,
-                    `Wznosy bokiem hantli: 4 x 15`,
-                    `Maszyna na brzuch: 4 x 20`
-                ];
-            } else {
-                // BRAK BÓLU - PEŁNY WYBÓR
-                if (wish.includes("klatka") || wish.includes("klat")) {
-                    exercises = [
-                        `Wyciskanie poziome sztangi: ${sets} x 6-8`,
-                        `Wyciskanie hantli skos dodatni: ${sets} x 10`,
-                        `Rozpiętki na maszynie Butterfly: 3 x 15`,
-                        `Pompki na poręczach (dół klatki): 3 x Max`,
-                        `Skullcrushers (Triceps): 3 x 12`,
-                        `Prostowanie linek na wyciągu: 3 x 15`,
-                        `Bieżnia pod górę: 10 min`
-                    ];
-                } else if (wish.includes("plecy") || wish.includes("pull")) {
-                    exercises = [
-                        `Martwy ciąg klasyczny: 4 x 5`,
-                        `Podciąganie nachwytem: 4 x Max`,
-                        `Wiosłowanie sztangą w opadzie: ${sets} x 8`,
-                        `Przyciąganie rączki wyciągu dolnego: 3 x 12`,
-                        `Facepulls (tył barku): 4 x 20`,
-                        `Uginanie ramion z hantlami: 4 x 12`,
-                        `Zwisy na drążku: 3 x 30 sek`
-                    ];
-                } else if (wish.includes("łapy") || wish.includes("biceps") || wish.includes("tric")) {
-                    exercises = [
-                        `Wyciskanie wąsko (Triceps): 4 x 8`,
-                        `Uginanie ramion ze sztangą: 4 x 10`,
-                        `Francuskie wyciskanie hantla: 3 x 12`,
-                        `Uginanie młotkowe: 3 x 12`,
-                        `Pompki diamentowe: 3 x Max`,
-                        `Modlitewnik: 3 x 15`
-                    ];
-                } else {
-                    // DOMYŚLNY HARDKOROWY FBW
-                    exercises = [
-                        `Przysiad ze sztangą: 4 x 8`,
-                        `Wyciskanie żołnierskie (Barki): 4 x 10`,
-                        `Martwy ciąg na prostych nogach: 3 x 12`,
-                        `Wyciskanie hantli na ławce: 4 x 10`,
-                        `Wiosłowanie hantlem: 3 x 12`,
-                        `Uginanie ramion + Triceps (Superseria): 3 x 15`,
-                        `Wznosy nóg w zwisie: 3 x 20`
-                    ];
-                }
+
+            if (fatigue >= 9) {
+                resultDiv.innerHTML = "🚨 <strong>KRYTYCZNE ZMĘCZENIE!</strong> Odpoczywaj.";
+                return;
             }
 
-            plan += "<ul style='list-style-type: square; padding-left: 20px;'>";
-            exercises.forEach(ex => {
-                plan += `<li style='margin-bottom: 8px;'>${ex}</li>`;
-            });
-            plan += "</ul>";
+            if (pain.includes("noga") || pain.includes("kolan")) {
+                exercises = [`Wyciskanie na ławce: ${sets}x10`, `Podciąganie: ${sets}xMax`, `Wiosłowanie hantlem: 3x12`];
+            } else {
+                exercises = [`Przysiad: ${sets}x8`, `Wyciskanie hantli: ${sets}x10`, `Martwy ciąg: ${sets}x8`];
+            }
 
-            plan += `<br><span style='color: var(--warning-yellow);'>ODPOCZYNEK MIĘDZY SERIAMI: 90 SEKUND.</span>`;
-        }
-
-        resultDiv.innerHTML = plan;
-    }, 1200);
-}
+            resultDiv.innerHTML = "<strong>PLAN:</strong><br>" + exercises.map(ex => `• ${ex}`).join("<br>");
+        }, 1000);
+    }
 </script>
+
+</body>
+</html>
